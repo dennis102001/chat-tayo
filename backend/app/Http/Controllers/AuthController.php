@@ -161,6 +161,8 @@ class AuthController extends Controller
 
         return response()->json([
             'avatar_url' => $user->avatar ? asset('storage/' . $user->avatar) : null,
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
     }
 

@@ -788,6 +788,8 @@ async function updateUser(data){
     const response = await axiosClient.post('/api/update-account', formData)
 
     showToast('Successfully updated', 'Success')
+    authUser.value.name = response.data.name
+    authUser.value.email = response.data.email
     authUser.value.avatar_url = response.data.avatar_url
     
   } 
