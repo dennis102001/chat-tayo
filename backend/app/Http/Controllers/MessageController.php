@@ -13,7 +13,6 @@ use GrahamCampbell\ResultType\Success;
 
 class MessageController extends Controller
 {
-    // checked
     public function markAsRead(Request $request){
         Message::where('conversation_id', $request->conversation_id)
             ->where('user_id', '!=', auth()->id())
@@ -25,7 +24,6 @@ class MessageController extends Controller
         ], 200);
     }
 
-    // checked for responses
     public function sendMessage(Request $request){
         $request->validate([
             'conversation_id' => 'required|exists:conversations,id',
@@ -71,7 +69,6 @@ class MessageController extends Controller
         ], 201);
     }
 
-    // checked for responses
     public function destroy($id){
         $message = Message::findOrFail($id);
         $conversationId = $message->conversation_id;

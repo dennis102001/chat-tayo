@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 
 class ConversationController extends Controller
 {
-    // checked for responses
     public function getConversations(Request $request){
         $conversationsList = Conversation::query()
             ->join('conversation_users', function ($join){
@@ -47,7 +46,6 @@ class ConversationController extends Controller
         ], 200);
     }
 
-    // checked for responses
     public function openConversation(Request $request) {
         $otherUser = User::findOrFail($request->other_user_id);
 

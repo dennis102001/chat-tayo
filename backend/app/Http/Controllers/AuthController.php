@@ -18,7 +18,6 @@ use function PHPUnit\Framework\isNull;
 
 class AuthController extends Controller
 {
-    // checked for responses
     public function store(Request $request){
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -54,7 +53,6 @@ class AuthController extends Controller
         ]);
     }
 
-    // checked
     public function register(Request $request){
         $validate = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255' ],
@@ -82,7 +80,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // checked for responses
     public function getAuthUser(Request $request){
         $user = auth()->user();
         return response()->json([
@@ -97,7 +94,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // checked for responses
     public function getSearchResults(Request $request){
         $name = trim($request->name);
 
@@ -119,7 +115,6 @@ class AuthController extends Controller
         ]);
     }
 
-    // checked
     public function destroy(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -127,7 +122,6 @@ class AuthController extends Controller
         return response()->noContent();
     }
 
-    // checked for responses
     public function update(Request $request){
         $user = auth()->user();
 
