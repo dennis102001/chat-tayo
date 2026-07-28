@@ -2,7 +2,7 @@
   <div
     v-if="open"
     @click.self="closeModal"
-    class="fixed inset-0 bg-slate-900/80 backdrop-blur flex items-center justify-center z-50"
+    class="fixed inset-0 bg-slate-900/80 backdrop-blur flex items-center justify-center z-50 p-4"
   >
     <div class="bg-slate-900/95 backdrop-blur-xl w-full max-w-md p-8 rounded-3xl border border-blue-500/30 shadow-2xl">
 
