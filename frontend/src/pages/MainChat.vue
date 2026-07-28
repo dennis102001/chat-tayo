@@ -33,7 +33,7 @@
     @cancel="cancelAction"
   />
 
-  <div class="h-screen flex bg-[radial-gradient(circle_at_10%_20%,#0f192d_0%,#080c18_100%)] text-gray-200 overflow-hidden">
+  <div class="h-full flex bg-[radial-gradient(circle_at_10%_20%,#0f192d_0%,#080c18_100%)] text-gray-200 overflow-hidden">
 
     <!-- Sidebar -->
     <aside class="w-full md:w-80 flex-col border-r border-white/10 backdrop-blur"
