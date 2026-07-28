@@ -289,44 +289,46 @@
           </div>
 
           <!-- messages -->
-          <div ref="messagesContainer"  @scroll="handleScroll" class="flex-1 overflow-y-auto p-4 space-y-3 hide-scrollbar">
-
-            <div v-if="loadingMoreMessages" class="flex">
-              <div class="bg-white/10 mx-auto text-sm px-4 py-1.5 rounded-full">
-                Loading...
-              </div>
-            </div>
-
-            <div v-for="message in currentConversation?.messages?.data">
-              <!-- received -->
-              <div v-if="message.user_id !== authUser?.id" class="flex items-end gap-2">
-                <div class="w-7 h-7 rounded-full border border-white/20 overflow-hidden flex items-center justify-center text-sm font-semibold text-white bg-gradient-to-br from-blue-500 to-cyan-400 cursor-pointer">
-                  <img
-                    v-if="currentConversation.otherUser?.avatar_url"
-                    :src="currentConversation.otherUser?.avatar_url"
-                    class="w-full h-full object-cover"
-                  />
-                  <span v-else>{{ currentConversation.otherUser?.name.charAt(0).toUpperCase() ?? '?' }}</span>
-                </div>
-                <div class="bg-white/10 border border-white/10 px-3 py-2 rounded-2xl text-sm max-w-2/5 cursor-pointer">
-                  {{ message.message }}
+          <div ref="messagesContainer"  @scroll="handleScroll" class="flex-1 overflow-y-auto p-4 hide-scrollbar400">
+            <div class="flex flex-col justify-end min-h-full space-y-3">
+            
+              <div v-if="loadingMoreMessages" class="flex">
+                <div class="bg-white/10 mx-auto text-sm px-4 py-1.5 rounded-full">
+                  Loading...
                 </div>
               </div>
 
-              <!-- sent -->
-              <div v-else class="flex justify-end gap-4">
-                <button
-                  v-if="selectedMsgId === message.id"
-                  @click="askDelete('message')"
-                  class="my-auto px-2 py-1.5 text-xs rounded-full border border-red-400/40 bg-red-500/20 text-red-300 hover:bg-red-500/40"
-                >
-                  <i class="fas fa-trash"></i>
-                </button>
-
-                <div @click="openMsgAction(message.id)" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-3 py-2 rounded-2xl text-sm shadow-lg max-w-2/5 [overflow-wrap:anywhere] cursor-pointer">
-                  {{ message.message }}
+              <div v-for="message in currentConversation?.messages?.data">
+                <!-- received -->
+                <div v-if="message.user_id !== authUser?.id" class="flex items-end gap-2">
+                  <div class="w-7 h-7 rounded-full border border-white/20 overflow-hidden flex items-center justify-center text-sm font-semibold text-white bg-gradient-to-br from-blue-500 to-cyan-400 cursor-pointer">
+                    <img
+                      v-if="currentConversation.otherUser?.avatar_url"
+                      :src="currentConversation.otherUser?.avatar_url"
+                      class="w-full h-full object-cover"
+                    />
+                    <span v-else>{{ currentConversation.otherUser?.name.charAt(0).toUpperCase() ?? '?' }}</span>
+                  </div>
+                  <div class="bg-white/10 border border-white/10 px-3 py-2 rounded-2xl text-sm shadow-lg max-w-2/5 [overflow-wrap:anywhere] cursor-pointer">
+                    {{ message.message }}
+                  </div>
                 </div>
-                
+
+                <!-- sent -->
+                <div v-else class="flex justify-end gap-4">
+                  <button
+                    v-if="selectedMsgId === message.id"
+                    @click="askDelete('message')"
+                    class="my-auto px-2 py-1.5 text-xs rounded-full border border-red-400/40 bg-red-500/20 text-red-300 hover:bg-red-500/40"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+
+                  <div @click="openMsgAction(message.id)" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-3 py-2 rounded-2xl text-sm shadow-lg max-w-2/5 [overflow-wrap:anywhere] cursor-pointer">
+                    {{ message.message }}
+                  </div>
+                  
+                </div>
               </div>
             </div>
           </div>
