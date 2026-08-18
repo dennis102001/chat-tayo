@@ -1,8 +1,8 @@
 <template>
   <Loading
     :show="loading" 
-    title="Loading"
-    subtitle="Please wait"
+    :title="loadingDetails.title"
+    :subtitle="loadingDetails.subtitle"
   />
 
   <AccountSettingModal
@@ -68,7 +68,7 @@
           <!-- Dropdown -->
           <div
             v-if="isProfileDropdownOpen"
-            class="absolute z-50 right-0 mt-2 w-48 rounded-xl border border-blue-500/30 bg-slate-900/30 backdrop-blur-lg shadow-xl overflow-hidden"
+            class="absolute z-40 right-0 mt-2 w-48 rounded-xl border border-blue-500/30 bg-slate-900/30 backdrop-blur-lg shadow-xl overflow-hidden"
           >
             <button
               @click="showAccountSettingModal = true"
@@ -397,6 +397,10 @@ const userStore = useUserStore()
 const authUser = computed(() => userStore.user )
 
 const loading = ref(false)
+const loadingDetails = ref({
+  title: 'Loading',
+  subtitle: 'Please wait...'
+})
 const loadingConversation = ref(false)
 const loadingMoreMessages = ref(false)
 const loadingConversationsList = ref(false)
@@ -487,7 +491,7 @@ function askLogout() {
 async function confirmDeleteMessage() {
   if(loading.value) return
 
-  loading.value = true
+  showLoading("Deleting message", "Please wait while we delete the message.")
 
   try {
     const response =  await axiosClient.delete(`/api/delete-message/${selectedMsgId.value}`)
@@ -518,8 +522,10 @@ async function confirmDeleteMessage() {
   catch (error) {
     showToast('An error occured', 'Error')
   }
-  loading.value = false
-  showConfirmModal.value = false
+  finally{
+    closeLoading()
+    showConfirmModal.value = false
+  }
 }
 
 function cancelAction() {
@@ -745,6 +751,9 @@ async function fetchResults(text){
 }
 
 async function logout(){
+
+  showLoading("Logging out", "Please wait while we securely log you out.")
+
   try {
     await axiosClient.post('/api/logout')
     
@@ -763,7 +772,7 @@ function isOnline(userId) {
 async function updateUser(data){
   if(loading.value) return
 
-  loading.value = true
+  showLoading("Updating account", "Please wait while we update your account.")
 
   const formData = new FormData();
   formData.append('name', data.name)
@@ -792,7 +801,7 @@ async function updateUser(data){
     showToast('An error occured', 'Error')
   }
   finally{
-    loading.value = false
+    closeLoading()
   }
 }
 
@@ -800,29 +809,29 @@ async function updatePassword(data) {
 
   if(loading.value) return
 
-  loading.value = true
+  showLoading("Updating password", "Please wait while we securely update your password.")
   
   if (authUser.value.has_password && !data.oldPassword) {
     showToast('Old password required', 'Error')
-    loading.value = false
+    closeLoading()
     return
   }
 
   if (!data.newPassword) {
     showToast('New password required', 'Error')
-    loading.value = false
+    closeLoading()
     return
   }
   
   if (data.newPassword.length < 8) {
     showToast('Password must be at least 8 characters', 'Error')
-    loading.value = false
+    closeLoading()
     return
   }
   
   if (data.newPassword !== data.confirmation) {
     showToast('Passwords do not match', 'Error')
-    loading.value = false
+    closeLoading()
     return
   }
   
@@ -847,7 +856,7 @@ async function updatePassword(data) {
     showToast(message, 'Error')
   }
   finally{
-    loading.value = false
+    closeLoading()
   }
 }
 
@@ -873,7 +882,7 @@ function openMsgAction(id){
 async function confirmDeleteConvo(){
   if (loading.value === true) return
 
-  loading.value = true
+  showLoading("Deleting conversation", "Please wait while we delete the conversation.")
 
   try {
     const response = await axiosClient.delete(`/api/delete-conversation/${selectedConvoId.value}`)
@@ -887,8 +896,20 @@ async function confirmDeleteConvo(){
     showToast('An error occurred', 'Error')
   }
   finally{
-    loading.value = false
+    closeLoading()
   }
+}
+
+function showLoading(title, subtitle){
+  loadingDetails.value.title = title
+  loadingDetails.value.subtitle = subtitle
+  loading.value = true
+}
+
+function closeLoading(){
+  loading.value = false
+  loadingDetails.value.title = 'Loading' 
+  loadingDetails.value.subtitle = 'Please wait...'
 }
 
 async function markAsRead(convoId) {

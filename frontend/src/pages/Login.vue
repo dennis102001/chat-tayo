@@ -251,9 +251,7 @@ function closeLoading(){
   loadingDetails.value.title = 'Loading' 
   loadingDetails.value.subtitle = 'Please wait...'
 }
-onMounted(() => {
-  
-})
+
 </script>
 
 <style>
