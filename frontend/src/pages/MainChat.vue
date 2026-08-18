@@ -30,7 +30,7 @@
   <div class="h-full flex bg-[radial-gradient(circle_at_10%_20%,#0f192d_0%,#080c18_100%)] text-gray-200 overflow-hidden">
 
     <!-- Sidebar -->
-    <aside class="w-full md:w-80 flex-col border-r border-white/10 backdrop-blur"
+    <aside class="w-full md:w-80 flex-col border-r border-white/10 "
       :class="isSidebarOpen ? 'flex' : 'hidden md:flex'"
     >
 
@@ -68,7 +68,7 @@
           <!-- Dropdown -->
           <div
             v-if="isProfileDropdownOpen"
-            class="absolute z-50 right-0 mt-2 w-48 rounded-xl border border-blue-500/30 bg-slate-900/90 backdrop-blur shadow-xl overflow-hidden"
+            class="absolute z-50 right-0 mt-2 w-48 rounded-xl border border-blue-500/30 bg-slate-900/30 backdrop-blur-lg shadow-xl overflow-hidden"
           >
             <button
               @click="showAccountSettingModal = true"
