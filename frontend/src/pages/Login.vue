@@ -5,12 +5,6 @@
     :subtitle="loadingDetails.subtitle"
   />
 
-  <Toast
-    :show="toast.show"
-    :message="toast.message"
-    :type="toast.type"
-  />
-
   <div class="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_10%_20%,#0f192d_0%,#080c18_100%)] relative overflow-hidden">
 
     <!-- glow -->
@@ -157,13 +151,12 @@ import TextInput from '@/components/TextInput.vue'
 import { ref, onMounted } from 'vue'
 import { useToast } from '@/composables/useToast'
 import Loading from '@/components/Loading.vue'
-import Toast from '@/components/Toast.vue'
 import axiosClient from '@/axios'
 import router from '@/router'
 import PrimaryButton from '@/components/PrimaryButton.vue'
 import { initEcho } from '@/echo'
 
-const { toast, showToast } = useToast()
+const { showToast } = useToast()
 
 const loading = ref(false)
 const loadingDetails = ref({
@@ -194,10 +187,8 @@ async function login() {
 
     showToast('Successful login', 'Success')
 
-    setTimeout(() => {
-      router.push({ name: 'MainChat' })
-    }, 2000)
-
+    await router.push({ name: 'MainChat' })
+    
   } 
   catch (error) {
     showToast('Invalid credentials', 'Error')
@@ -266,7 +257,6 @@ onMounted(() => {
 </script>
 
 <style>
-
 
 /* gradient animation */
 @keyframes gradientMove {

@@ -4,12 +4,6 @@
     title="Loading"
     subtitle="Please wait"
   />
-  
-  <Toast
-    :show="toast.show"
-    :message="toast.message"
-    :type="toast.type"
-  />
 
   <AccountSettingModal
     :open="showAccountSettingModal"
@@ -391,14 +385,13 @@ import { onMounted, ref, nextTick, watch, computed } from 'vue'
 import useUserStore from '@/stores/user';
 import axiosClient from '@/axios';
 import Loading from '@/components/Loading.vue';
-import Toast from '@/components/Toast.vue';
 import { useToast } from '@/composables/useToast';
 import router from '@/router';
 import AccountSettingModal from '@/components/AccountSettingModal.vue';
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import ChangePasswordModal from '@/components/ChangePasswordModal.vue';
 
-const { toast, showToast } = useToast()
+const { showToast } = useToast()
 
 const userStore = useUserStore()
 const authUser = computed(() => userStore.user )

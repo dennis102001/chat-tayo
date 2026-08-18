@@ -1,10 +1,4 @@
 <template>
-    <Toast
-        :show="toast.show"
-        :message="toast.message"
-        :type="toast.type"
-    />
-
     <Loading
         :show="loading" 
         :title="loadingDetails.title"
@@ -82,13 +76,12 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
-import Toast from '@/components/Toast.vue'
 import { useToast } from '@/composables/useToast'
 import axiosClient from '@/axios';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import Loading from '@/components/Loading.vue';
 
-const { toast, showToast } = useToast()
+const { showToast } = useToast()
 const route = useRoute()
 
 const form = ref({

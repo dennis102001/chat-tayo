@@ -5,12 +5,6 @@
     subtitle="Please wait while we are registering your account"
   />
 
-  <Toast
-    :show="toast.show"
-    :message="toast.message"
-    :type="toast.type"
-  />
-
   <div class="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_10%_20%,#0f192d_0%,#080c18_100%)] relative overflow-hidden">
 
     <!-- glow -->
@@ -103,12 +97,11 @@ import axiosClient from '../axios.js'
 import TextInput from '@/components/TextInput.vue'
 import Loading from '@/components/Loading.vue'
 import { ref } from 'vue'
-import Toast from '@/components/Toast.vue'
 import router from '@/router/index.js'
 import { useToast } from '@/composables/useToast.js'
 import PrimaryButton from '@/components/PrimaryButton.vue'
 
-const { toast, showToast } = useToast()
+const { showToast } = useToast()
 const loading = ref(false)
 
 const formData = ref({

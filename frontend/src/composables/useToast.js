@@ -1,20 +1,25 @@
 import { ref } from "vue"
 
-export function useToast(){
-    const toast = ref({
-        show: false,
-        message: '',
-        type: 'Info'
-    })
+const toast = ref({
+    show: false,
+    message: '',
+    type: 'Info'
+})
 
+let toastTimeout
+
+export function useToast(){
+    
     function showToast(message, type = 'Info') {
+        clearTimeout(toastTimeout)
+        
         toast.value = {
             show: true,
             message,
             type
         }
 
-        setTimeout(() => {
+        toastTimeout = setTimeout(() => {
             toast.value.show = false
         }, 2500)
     }
