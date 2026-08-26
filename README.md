@@ -6,7 +6,7 @@ ChatTayo is a real-time messaging app that runs in a browser. Users can sign in 
 
 ## Installation
 1. Clone the repository or download the zip file and extract it
-2. Open the project in VS Code (or anything alike)
+2. Open the project in VS Code (or another code editor)
 3. Install Node dependencies
     - Change directory to frontend folder
     - Run: `npm install`
@@ -17,10 +17,15 @@ ChatTayo is a real-time messaging app that runs in a browser. Users can sign in 
 
     **Backend:**
     - Copy `backend/.env.example` to `backend/.env`
-    - Add your:
-      - Mailer credentials
-      - Google OAuth keys
-      - Reverb credentials (APP_ID, APP_KEY, APP_SECRET, PORT)
+    - Configure:
+      - Google OAuth credentials (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT)
+      - Reverb credentials (REVERB_APP_ID, REVERB_APP_KEY, REVERB_APP_SECRET, REVERB_PORT)
+      - Brevo API credentials (BREVO_API_KEY, MAIL_FROM_ADDRESS, MAIL_FROM_NAME)
+
+    Note: 
+      - Google OAuth: Create OAuth credentials in Google Cloud Console and configure the authorized redirect URI.
+      - Reverb: Configure the Reverb credentials according to your Laravel Reverb setup.
+      - Brevo: Create an API key and verify the sender email.
 
     **Frontend:**
     - Copy `frontend/.env.example` to `frontend/.env`
@@ -37,7 +42,7 @@ ChatTayo is a real-time messaging app that runs in a browser. Users can sign in 
 
 Run these three commands in separate terminals:
 
-- Frontend: `npm run dev`
-- Backend: `php artisan serve`
-- Backend: `php artisan reverb:start`
+- Frontend (inside `frontend`): `npm run dev`
+- Backend (inside `backend`): `php artisan serve`
+- Reverb (inside `backend`): `php artisan reverb:start`
 
