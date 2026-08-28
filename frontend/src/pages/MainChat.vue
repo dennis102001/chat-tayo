@@ -84,7 +84,7 @@
 
             <Transition name="account-settings"> 
               <div v-if="isAccountSettingsOpen"> 
-
+                
                 <div class="h-px bg-slate-600/30"></div>
 
                 <button
@@ -103,6 +103,16 @@
                 >
                   <i class="fas fa-lock text-slate-400"></i>
                   Change Password
+                </button>
+
+                <div class="h-px bg-slate-600/30"></div> 
+                
+                <button 
+                  @click="askDelete('account')" 
+                  class="w-full flex items-center gap-3 px-4 py-3 pl-10 text-sm text-red-400 hover:bg-red-500/20 transition" 
+                > 
+                  <i class="fas fa-trash-alt"></i> 
+                  Delete Account 
                 </button>
 
               </div>
@@ -498,6 +508,14 @@ function askDelete(type = null) {
       action: confirmDeleteConvo
     })
   }
+
+  if(type === 'account'){
+    openConfirm({
+      title: 'Delete Account?',
+      message: 'Are you sure you want to delete your account?',
+      action: confirmDeleteAccount
+    })
+  }
   
 }
 
@@ -541,7 +559,29 @@ async function confirmDeleteMessage() {
     showToast('Successfully deleted', 'Success')
   } 
   catch (error) {
-    showToast('An error occured', 'Error')
+    showToast('An error occurred', 'Error')
+  }
+  finally{
+    closeLoading()
+    showConfirmModal.value = false
+  }
+}
+
+async function confirmDeleteAccount() {
+  if(loading.value) return
+
+  showLoading("Deleting account", "Please wait while we delete your account.")
+
+  try {
+    await axiosClient.delete('/api/delete-account')
+
+    showToast('Successfully deleted', 'Success')
+
+    userStore.logoutUser()
+    router.push({ name: 'Login' })
+  } 
+  catch (error) {
+    showToast('An error occurred', 'Error')
   }
   finally{
     closeLoading()
@@ -710,7 +750,7 @@ async function sendMessage(){
     scrollToBottom()
   } 
   catch (error) {
-    showToast('An error occured', 'Error')
+    showToast('An error occurred', 'Error')
   }  
   finally{
     isSendingMessage.value = false
@@ -767,7 +807,7 @@ async function fetchResults(text){
     matchedUsers.value = response.data.matched_users
   } 
   catch (error) {
-    showToast('An error occured', 'Error')
+    showToast('An error occurred', 'Error')
   }
 }
 
@@ -819,7 +859,7 @@ async function updateUser(data){
     
   } 
   catch (error) {
-    showToast('An error occured', 'Error')
+    showToast('An error occurred', 'Error')
   }
   finally{
     closeLoading()
@@ -945,7 +985,7 @@ async function markAsRead(convoId) {
       conversation_id: convoId
     })
   } catch (error) {
-    showToast('An error occured', 'Error')
+    showToast('An error occurred', 'Error')
   } 
 }
 

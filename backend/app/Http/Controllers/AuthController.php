@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Nette\Utils\Json;
 
 use function PHPSTORM_META\map;
 use function PHPUnit\Framework\isNull;
@@ -115,8 +116,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function destroy(Request $request)
-    {
+    public function destroy(Request $request){
         $request->user()->currentAccessToken()->delete();
 
         return response()->noContent();
@@ -183,6 +183,18 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Password updated'
+        ], 200);
+    }
+
+    public function delete(Request $request) {
+        $user = $request->user();
+
+        $user->tokens()->delete();
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Account deleted successfully'
         ], 200);
     }
 }

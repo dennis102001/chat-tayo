@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum', 'token.sliding'])->group(function() {
         Route::post('/change-password', 'changePassword');
         Route::post('/logout', 'destroy');
         Route::post('/update-account', 'update');
+        Route::delete('/delete-account', 'delete');
     });
 
     Route::controller(MessageController::class)->group(function(){
