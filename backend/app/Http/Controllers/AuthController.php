@@ -189,6 +189,9 @@ class AuthController extends Controller
     public function delete(Request $request) {
         $user = $request->user();
 
+        $user->email = $user->email . '_deleted_' . $user->id;
+        $user->save();
+        
         $user->tokens()->delete();
 
         $user->delete();
