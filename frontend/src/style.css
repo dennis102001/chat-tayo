@@ -36,3 +36,21 @@ button{
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.account-settings-enter-active,
+.account-settings-leave-active {
+transition: all 0.3s ease;
+overflow: hidden;
+}
+
+.account-settings-enter-from,
+.account-settings-leave-to {
+opacity: 0;
+max-height: 0;
+}
+
+.account-settings-enter-to,
+.account-settings-leave-from {
+opacity: 1;
+max-height: 200px;
+}

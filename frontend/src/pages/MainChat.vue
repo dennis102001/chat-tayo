@@ -5,10 +5,10 @@
     :subtitle="loadingDetails.subtitle"
   />
 
-  <AccountSettingModal
-    :open="showAccountSettingModal"
+  <UpdateProfileModal
+    :open="showUpdateProfileModal"
     :user="authUser"
-    @close="showAccountSettingModal = false"
+    @close="showUpdateProfileModal = false"
     @save="updateUser"
   />
 
@@ -70,23 +70,43 @@
             v-if="isProfileDropdownOpen"
             class="absolute z-40 right-0 mt-2 w-48 rounded-xl border border-blue-500/30 bg-slate-900/30 backdrop-blur-lg shadow-xl overflow-hidden"
           >
-            <button
-              @click="showAccountSettingModal = true"
-              class="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-200 hover:bg-blue-500/20 transition"
-            >
-              <i class="fas fa-user-cog text-slate-400"></i>
-              Account Settings
+            <!-- Account Settings -->
+            <button 
+              @click="isAccountSettingsOpen = !isAccountSettingsOpen" class="w-full flex items-center justify-between gap-3 px-4 py-3 text-sm text-slate-200 hover:bg-blue-500/20 transition" 
+            > 
+              <span class="flex items-center gap-3"> 
+                <i class="fas fa-cog text-slate-400"></i> 
+                Account Settings 
+              </span>
+
+              <i :class="{ 'rotate-180': isAccountSettingsOpen }" class="fas fa-chevron-down text-xs text-slate-400 transition-transform duration-300"></i>
             </button>
 
-            <div class="h-px bg-slate-600/30"></div>
+            <Transition name="account-settings"> 
+              <div v-if="isAccountSettingsOpen"> 
 
-            <button
-              @click="showChangePasswordModal = true"
-              class="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-200 hover:bg-blue-500/20 transition"
-            >
-              <i class="fas fa-lock text-slate-400"></i>
-              Change Password
-            </button>
+                <div class="h-px bg-slate-600/30"></div>
+
+                <button
+                  @click="showUpdateProfileModal = true"
+                  class="w-full flex items-center gap-3 px-4 py-3 pl-10 text-sm text-slate-200 hover:bg-blue-500/20 transition"
+                >
+                  <i class="fas fa-user-cog text-slate-400"></i>
+                  Update Profile
+                </button>
+
+                <div class="h-px bg-slate-600/30"></div>
+
+                <button
+                  @click="showChangePasswordModal = true"
+                  class="w-full flex items-center gap-3 px-4 py-3 pl-10 text-sm text-slate-200 hover:bg-blue-500/20 transition"
+                >
+                  <i class="fas fa-lock text-slate-400"></i>
+                  Change Password
+                </button>
+
+              </div>
+            </Transition>
 
             <div class="h-px bg-slate-600/30"></div>
 
@@ -387,7 +407,7 @@ import useUserStore from '@/stores/user';
 import axiosClient from '@/axios';
 import Loading from '@/components/Loading.vue';
 import router from '@/router';
-import AccountSettingModal from '@/components/AccountSettingModal.vue';
+import UpdateProfileModal from '@/components/UpdateProfileModal.vue';
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import ChangePasswordModal from '@/components/ChangePasswordModal.vue';
 
@@ -427,7 +447,8 @@ const matchedUsers = ref([])
 const profileDropdown = ref()
 const isProfileDropdownOpen = ref()
 const toggleProfileDropdown = () => isProfileDropdownOpen.value = !isProfileDropdownOpen.value
-const showAccountSettingModal = ref(false)
+const isAccountSettingsOpen = ref(false);
+const showUpdateProfileModal = ref(false)
 const showChangePasswordModal = ref(false)
 
 const currentConvoDropdown = ref()
