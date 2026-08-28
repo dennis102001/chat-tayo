@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Illuminate\Support\Facades\Validator;
@@ -189,12 +190,15 @@ class AuthController extends Controller
     public function delete(Request $request) {
         $user = $request->user();
 
-        $user->email = $user->email . '_deleted_' . $user->id;
-        $user->save();
-        
-        $user->tokens()->delete();
+        DB::transaction(function () use ($user) {
+            $user->name = 'Deleted User';
+            $user->email = $user->email . '_deleted_' . $user->id;
+            $user->save();
 
-        $user->delete();
+            $user->tokens()->delete();
+
+            $user->delete();
+        });
 
         return response()->json([
             'message' => 'Account deleted successfully'
