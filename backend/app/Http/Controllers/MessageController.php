@@ -41,6 +41,18 @@ class MessageController extends Controller
             ], 403);
         }
 
+        $otherUser = Conversation::findOrFail($request->conversation_id)
+            ->users()
+            ->where('user_id', '!=', auth()->id())
+            ->first();
+        
+        if ($otherUser->trashed()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot send message in this conversation'
+            ], 403);
+        }     
+
         $message = Message::create([
             'user_id' => auth()->id(),
             'conversation_id' => $request->conversation_id,
@@ -53,13 +65,8 @@ class MessageController extends Controller
             'last_message_at' => $message->created_at
         ]);
 
-        $receiver = Conversation::findOrFail($request->conversation_id)
-            ->users()
-            ->where('user_id', '!=', auth()->id())
-            ->first();
-
         $message->sender = auth()->user();
-        $message->receiver = $receiver;
+        $message->receiver = $otherUser;
 
         broadcast(new MessageSent($message));
         

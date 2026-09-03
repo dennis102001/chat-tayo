@@ -47,13 +47,34 @@ class ConversationController extends Controller
     }
 
     public function openConversation(Request $request) {
-        $otherUser = User::findOrFail($request->other_user_id);
+        $otherUser = User::withTrashed()->findOrFail($request->other_user_id);
 
         $conversation = Conversation::whereHas('users', function ($q) use ($request) {
             $q->where('user_id', auth()->id());
         })->whereHas('users', function ($q) use ($otherUser) {
             $q->where('user_id', $otherUser->id);
         })->first();
+        
+        if($otherUser->trashed()){
+
+            $hasLastMessage = $conversation ? $conversation->last_message_at : null;
+            
+            if(!$hasLastMessage){
+                return response()->json([
+                    'message' => 'Not Found'
+                ], 404);
+            }
+        
+            $conversationClearedAt = ConversationUser::where('conversation_id', $conversation->id)
+                ->where('user_id', auth()->id())
+                ->value('cleared_at');
+
+            if($conversationClearedAt && $conversation->last_message_at < $conversationClearedAt){
+                return response()->json([
+                    'message' => 'Not Found'
+                ], 404);
+            }
+        }
 
         if (!$conversation) {
             $conversation = Conversation::create();
