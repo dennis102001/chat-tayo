@@ -654,13 +654,16 @@ async function loadMessages(otherUserId){
     else{
       currentConversation.value = response.data
       currentConversation.value.messages.data = response.data.messages.data.reverse()
+      
+      // updating form data conversation id - for sending message
+      messageFormData.value.conversation_id = currentConversation.value.conversation_id   
+
+      //clear message input
+      messageFormData.value.message = ''
     }
 
     page.value++
     lastPage.value = response.data.messages.last_page
-    
-    // updating form data conversation id - for sending message
-    messageFormData.value.conversation_id = currentConversation.value.conversation_id   
 
     // update unread count to zero
     const i = conversations.value.findIndex((c) => {
