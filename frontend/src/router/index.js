@@ -6,6 +6,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import useUserStore from '@/stores/user'
 import ResetPassword from '@/pages/ResetPassword.vue'
 import NotFound from '@/pages/NotFound.vue'
+import VerifyEmail from '@/pages/VerifyEmail.vue'
+import CheckEmail from '@/pages/CheckEmail.vue'
 
 const routes = [
   {
@@ -33,6 +35,16 @@ const routes = [
     path: '/reset-password',
     name: 'ResetPassword', 
     component: ResetPassword
+  },
+  {
+    path: '/verify-email',
+    name: 'VerifyEmail', 
+    component: VerifyEmail
+  },
+  {
+    path: '/check-email',
+    name: 'CheckEmail', 
+    component: CheckEmail
   },
   {
     path: '/:pathMatch(.*)*',
