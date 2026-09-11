@@ -89,7 +89,7 @@
       class="fixed inset-0 bg-slate-900/80 backdrop-blur flex items-center justify-center z-50"
     >
 
-      <div v-if="!emailSent" class="bg-slate-900/95 backdrop-blur-xl w-full max-w-md p-8 rounded-3xl border border-blue-500/30 shadow-2xl">
+      <div v-if="!emailForgotPasswordSent" class="bg-slate-900/95 backdrop-blur-xl w-full max-w-md p-8 rounded-3xl border border-blue-500/30 shadow-2xl">
         
         <h3 class="text-center text-xl font-bold text-white">
           🔑 Forgot Password?
@@ -143,6 +143,83 @@
       </div>
 
     </div>
+
+    <!-- resend modal -->
+    <div
+      v-if="showResendVerificationModal"
+      class="fixed inset-0 bg-slate-900/80 backdrop-blur flex items-center justify-center z-50 px-6"
+    >
+      <div class="bg-slate-900/95 backdrop-blur-xl w-full max-w-md p-8 rounded-3xl border border-blue-500/30 shadow-2xl">
+
+        <template v-if="!emailResendVerificationSent">
+
+          <h3 class="text-center text-xl font-bold text-white">
+            📧 Verify Your Email
+          </h3>
+
+          <p class="mt-2 text-center text-sm text-slate-400">
+            Please verify your email before logging in.
+          </p>
+
+          <p class="mt-4 text-center text-blue-300 font-medium break-all">
+            {{ formData.email }}
+          </p>
+
+          <p class="mt-4 text-center text-sm text-slate-400">
+            Didn't receive the verification email?
+            Click Resend to receive a new link.
+          </p>
+
+          <div class="mt-6 flex gap-3">
+
+            <button
+              @click="resendVerification"
+              class="flex-1 rounded-full bg-blue-500 py-3 text-white hover:bg-blue-600"
+            >
+              Resend
+            </button>
+
+            <button
+              @click="closeResendModal"
+              class="flex-1 rounded-full bg-slate-700 py-3 text-white hover:bg-slate-600"
+            >
+              Cancel
+            </button>
+
+          </div>
+        </template>
+
+        <template v-else>
+
+          <h3 class="text-center text-xl font-bold text-white">
+            ✓ Verification Email Sent
+          </h3>
+
+          <p class="mt-2 text-center text-sm text-slate-400">
+            A new verification link has been sent to:
+          </p>
+
+          <p class="mt-3 text-center text-blue-300 font-medium break-all">
+            {{ formData.email }}
+          </p>
+
+          <p class="mt-3 text-center text-sm text-slate-400">
+            Please check your inbox and click the link to verify your email.
+          </p>
+
+          <div class="mt-6">
+            <PrimaryButton
+              @click="closeResendModal"
+              text="Ok"
+              type="button"
+            />
+          </div>
+
+        </template>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -164,7 +241,10 @@ const loadingDetails = ref({
   subtitle: 'Please wait...'
 })
 const showForgotPasswordModal = ref(false)
-const emailSent = ref(false)
+const emailForgotPasswordSent = ref(false)
+
+const showResendVerificationModal = ref(false)
+const emailResendVerificationSent = ref(false)
 
 const formData = ref({
   email: null,
@@ -191,12 +271,17 @@ async function login() {
     
   } 
   catch (error) {
-    showToast('Invalid credentials', 'Error')
+    
+    if(error.response?.status === 403){
+      showResendVerificationModal.value = true
+      return
+    }
+    
+    showToast((error.response?.data?.message ?? 'Invalid credentials'), 'Error')
   }  
   finally {
     closeLoading()
   }
-  
 }
 
 function loginWithGoogle() {
@@ -209,7 +294,7 @@ function loginWithGoogle() {
 function closeForgotPasswordModal() {
   showForgotPasswordModal.value = false
   forgotPasswordFormData.value.email = ''
-  emailSent.value = false
+  emailForgotPasswordSent.value = false
 }
 
 async function sendResetLink() {
@@ -229,7 +314,7 @@ async function sendResetLink() {
 
   try {
     await axiosClient.post('/api/forgot-password', forgotPasswordFormData.value)
-    emailSent.value = true
+    emailForgotPasswordSent.value = true
     showToast(`Reset link sent to ${userEmail}`, 'Success')
   } 
   catch (error) {
@@ -238,6 +323,43 @@ async function sendResetLink() {
   finally{
     closeLoading()
   }
+}
+
+async function resendVerification() {
+  const userEmail = formData.value.email.trim()
+
+  if (!userEmail) {
+    showToast('Please enter your email', 'Error')
+    return
+  }
+
+  if (!userEmail.includes('@')) {
+    showToast('Please enter a valid email', 'Error')
+    return
+  }
+
+  showLoading('Sending verification email', 'Please wait while we send a new verification link...')
+
+  try {
+    await axiosClient.post('/api/email/resend-verification', {
+      email: userEmail
+    })
+
+    emailResendVerificationSent.value = true
+
+    showToast('Verification email sent', 'Success')
+  } 
+  catch (error) {
+    showToast(error.response?.data?.message ?? 'Unable to send verification email', 'Error')
+  } 
+  finally {
+    closeLoading()
+  }
+}
+
+function closeResendModal() {
+  showResendVerificationModal.value = false
+  emailResendVerificationSent.value = false
 }
 
 function showLoading(title, subtitle){

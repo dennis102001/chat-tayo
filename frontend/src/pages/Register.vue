@@ -1,8 +1,8 @@
 <template>
   <Loading 
     :show="loading" 
-    title="Registering your account"
-    subtitle="Please wait while we are registering your account"
+    :title="loadingDetails.title"
+    :subtitle="loadingDetails.subtitle"
   />
 
   <div class="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_10%_20%,#0f192d_0%,#080c18_100%)] relative overflow-hidden">
@@ -89,6 +89,81 @@
     <!-- bottom gradient -->
     <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600 animate-gradient"></div>
 
+    <!-- resend modal -->
+    <div
+      v-if="showResendVerificationModal"
+      class="fixed inset-0 bg-slate-900/80 backdrop-blur flex items-center justify-center z-50 px-6"
+    >
+      <div class="bg-slate-900/95 backdrop-blur-xl w-full max-w-md p-8 rounded-3xl border border-blue-500/30 shadow-2xl">
+
+        <template v-if="!emailResendVerificationSent">
+
+          <h3 class="text-center text-xl font-bold text-white">
+            📧 Verify Your Email
+          </h3>
+
+          <p class="mt-2 text-center text-sm text-slate-400">
+            Please verify your email before logging in.
+          </p>
+
+          <p class="mt-4 text-center text-blue-300 font-medium break-all">
+            {{ formData.email }}
+          </p>
+
+          <p class="mt-4 text-center text-sm text-slate-400">
+            Didn't receive the verification email?
+            Click Resend to receive a new link.
+          </p>
+
+          <div class="mt-6 flex gap-3">
+
+            <button
+              @click="resendVerification"
+              class="flex-1 rounded-full bg-blue-500 py-3 text-white hover:bg-blue-600"
+            >
+              Resend
+            </button>
+
+            <button
+              @click="closeResendModal"
+              class="flex-1 rounded-full bg-slate-700 py-3 text-white hover:bg-slate-600"
+            >
+              Cancel
+            </button>
+
+          </div>
+        </template>
+
+        <template v-else>
+
+          <h3 class="text-center text-xl font-bold text-white">
+            ✓ Verification Email Sent
+          </h3>
+
+          <p class="mt-2 text-center text-sm text-slate-400">
+            A new verification link has been sent to:
+          </p>
+
+          <p class="mt-3 text-center text-blue-300 font-medium break-all">
+            {{ formData.email }}
+          </p>
+
+          <p class="mt-3 text-center text-sm text-slate-400">
+            Please check your inbox and click the link to verify your email.
+          </p>
+
+          <div class="mt-6">
+            <PrimaryButton
+              @click="closeResendModal"
+              text="Ok"
+              type="button"
+            />
+          </div>
+
+        </template>
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -103,6 +178,13 @@ import PrimaryButton from '@/components/PrimaryButton.vue'
 
 const { showToast } = useToast()
 const loading = ref(false)
+const loadingDetails = ref({
+  title: 'Loading',
+  subtitle: 'Please wait...'
+})
+
+const showResendVerificationModal = ref(false)
+const emailResendVerificationSent = ref(false)
 
 const formData = ref({
   name: null,
@@ -118,26 +200,83 @@ const formErrors = ref({
 })
 
 async function register(){
-  loading.value = true
+  showLoading('Registering your account', 'Please wait while we are registering your account' )
   
   try {
     await axiosClient.post('/api/register', formData.value)
 
-    clearFormData();
-
-    showToast('Successful registration', 'Success')
-    setTimeout(() => {
-      router.push({ name: 'Login'})
-    }, 2000)
+    showToast('Account created successfully', 'Success')
     
+    router.push({ 
+      name: 'CheckEmail',
+      query: {
+        email: formData.value.email
+      }
+    })
+
+    clearFormData();
   } 
   catch (error) {
+    if(error.response?.status === 403){
+      showResendVerificationModal.value = true
+      return
+    }
+    
     formErrors.value = error.response?.data?.errors || {}
-    showToast('Something went wrong', 'Error')
+    showToast((error.response?.data?.message ?? 'Something went wrong'), 'Error')
   }
   finally{
-    loading.value = false
+    closeLoading()
   }
+}
+
+async function resendVerification() {
+  const userEmail = formData.value.email.trim()
+
+  if (!userEmail) {
+    showToast('Please enter your email', 'Error')
+    return
+  }
+
+  if (!userEmail.includes('@')) {
+    showToast('Please enter a valid email', 'Error')
+    return
+  }
+
+  showLoading('Sending verification email', 'Please wait while we send a new verification link...')
+
+  try {
+    await axiosClient.post('/api/email/resend-verification', {
+      email: userEmail
+    })
+
+    emailResendVerificationSent.value = true
+
+    showToast('Verification email sent', 'Success')
+  } 
+  catch (error) {
+    showToast(error.response?.data?.message ?? 'Unable to send verification email', 'Error')
+  } 
+  finally {
+    closeLoading()
+  }
+}
+
+function closeResendModal() {
+  showResendVerificationModal.value = false
+  emailResendVerificationSent.value = false
+}
+
+function showLoading(title, subtitle){
+  loadingDetails.value.title = title
+  loadingDetails.value.subtitle = subtitle
+  loading.value = true
+}
+
+function closeLoading(){
+  loading.value = false
+  loadingDetails.value.title = 'Loading' 
+  loadingDetails.value.subtitle = 'Please wait...'
 }
 
 function clearFormData(){
