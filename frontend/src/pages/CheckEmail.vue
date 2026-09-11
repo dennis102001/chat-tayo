@@ -149,22 +149,18 @@ async function resendVerification() {
   loading.value = true
 
   try {
-    const res = await axiosClient.post('/api/email/resend-verification', {
+    await axiosClient.post('/api/email/resend-verification', {
       email: email.value
     })
 
     showToast('Verification email sent', 'Success')
 
     startCooldown()
-
-    console.log(res);
-    
-  } catch (error) {
+  } 
+  catch (error) {
     showToast( error.response?.data?.message ?? 'Unable to send verification email', 'Error' )
-
-    console.log(error.response);
-    
-  } finally {
+  } 
+  finally {
     loading.value = false
   }
 }

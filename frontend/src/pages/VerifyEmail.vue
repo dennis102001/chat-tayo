@@ -208,20 +208,15 @@ onMounted(async () => {
   loading.value = true
 
   try {
-    const response = await axiosClient.post('/api/email/verify', {
-        token,
-        email: userEmail
+    await axiosClient.post('/api/email/verify', {
+      token,
+      email: userEmail
     })
 
     status.value = 'success'
-
-    console.log(response);
-    
   } 
   catch (error) {
     status.value = 'error'
-    console.log(error.response);
-    
   } 
   finally {
     loading.value = false
@@ -246,23 +241,19 @@ async function resendVerification() {
   loading.value = true
 
   try {
-    const res = await axiosClient.post('/api/email/resend-verification', {
+    await axiosClient.post('/api/email/resend-verification', {
       email: userEmail
     })
 
     emailSent.value = true
 
     showToast('Verification email sent', 'Success')
-
-    console.log(res)
   } 
   catch (error) {
     showToast(
         error.response?.data?.message ?? 'Unable to send verification email',
         'Error'
     )
-
-    console.log(error.response)
   } 
   finally {
     loading.value = false
