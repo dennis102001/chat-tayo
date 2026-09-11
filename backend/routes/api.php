@@ -42,6 +42,8 @@ Route::middleware(['auth:sanctum', 'token.sliding'])->group(function() {
 Route::controller(AuthController::class)->group(function() {
     Route::post('/login', 'store');
     Route::post('/register', 'register');
+    Route::post('/email/resend-verification', 'resendVerification');
+    Route::post('/email/verify', 'verifyEmail');
 });
 
 Route::controller(PasswordResetController::class)->group(function(){
@@ -66,12 +68,14 @@ Route::get('/auth/google/callback', function(Request $request){
                 'name' => $googleUser->name,
                 'email' => $googleUser->email,
                 'password' => null,
+                'email_verified_at' => now(),
             ]
         );
     }
     else if (!$user->google_id) {
         $user->update([
-            'google_id' => $googleUser->id
+            'google_id' => $googleUser->id,
+            'email_verified_at' => now(),
         ]);
     }
 
