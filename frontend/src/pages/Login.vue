@@ -38,7 +38,7 @@
           placeholder="Password"
           icon="fas fa-lock"
         />
-        <!-- options -->
+
         <div class="flex justify-between text-sm text-indigo-200">
           <label for="remember" class="flex items-center gap-2 cursor-pointer">
             <input id="remember" type="checkbox" v-model="formData.remember" class="accent-blue-500">
@@ -50,7 +50,6 @@
           </button>
         </div>
 
-        <!-- button -->
         <PrimaryButton
           text="Log in"
           type="submit"
@@ -70,7 +69,6 @@
           
         </div>
 
-        <!-- signup -->
         <p class="text-center text-indigo-300 text-sm mt-6">
           Don't have an account?
           <RouterLink to="Register" class="text-blue-400 font-semibold ml-1">

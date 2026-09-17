@@ -65,7 +65,7 @@
             <i class="fa-solid fa-bars"></i>
           </button>
 
-          <!-- Dropdown -->
+          <!-- Profile Dropdown -->
           <div
             v-if="isProfileDropdownOpen"
             class="absolute z-40 right-0 mt-2 w-48 rounded-xl border border-blue-500/30 bg-slate-900/30 backdrop-blur-lg shadow-xl overflow-hidden"
@@ -131,7 +131,7 @@
         </div>
       </div>
 
-      <!-- search -->
+      <!-- search bar -->
       <div class="p-3 border-b border-white/10 relative">
         <input
           v-model="searchBar"

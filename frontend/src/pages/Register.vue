@@ -75,7 +75,6 @@
           <button @click="loginWithGoogle" type="button" class="social"><i class="fab fa-google"></i></button>
         </div>
 
-        <!-- login link -->
         <p class="text-center text-indigo-300 text-sm mt-6">
           Already have an account?
           <RouterLink to="Login"  class="text-blue-400 font-semibold ml-1">

@@ -34,61 +34,61 @@
         <!-- success -->
         <template v-if="status === 'success'">
 
-            <div class="w-16 h-16 mx-auto flex items-center justify-center rounded-full bg-green-500/10 border border-green-500/30">
-                <i class="fas fa-check text-green-400 text-2xl"></i>
-            </div>
+          <div class="w-16 h-16 mx-auto flex items-center justify-center rounded-full bg-green-500/10 border border-green-500/30">
+            <i class="fas fa-check text-green-400 text-2xl"></i>
+          </div>
 
-            <h2 class="mt-6 text-2xl font-bold text-white">
-                Email Verified!
-            </h2>
+          <h2 class="mt-6 text-2xl font-bold text-white">
+            Email Verified!
+          </h2>
 
-            <p class="mt-3 text-sm text-slate-400 leading-relaxed">
-                Your email address has been successfully verified.
-                You can now log in to your ChatTayo account.
-            </p>
+          <p class="mt-3 text-sm text-slate-400 leading-relaxed">
+            Your email address has been successfully verified.
+            You can now log in to your ChatTayo account.
+          </p>
 
-            <div class="mt-6">
-                <PrimaryButton
-                    @click="goToLogin"
-                    text="Go to Login"
-                    type="button"
-                    icon="fas fa-arrow-right-to-bracket"
-                />
-            </div>
+          <div class="mt-6">
+            <PrimaryButton
+              @click="goToLogin"
+              text="Go to Login"
+              type="button"
+              icon="fas fa-arrow-right-to-bracket"
+            />
+          </div>
 
         </template>
 
         <!-- error -->
         <template v-else-if="status === 'error'">
 
-            <div class="w-16 h-16 mx-auto flex items-center justify-center rounded-full bg-red-500/10 border border-red-500/30">
-                <i class="fas fa-link-slash text-red-400 text-2xl"></i>
-            </div>
+          <div class="w-16 h-16 mx-auto flex items-center justify-center rounded-full bg-red-500/10 border border-red-500/30">
+            <i class="fas fa-link-slash text-red-400 text-2xl"></i>
+          </div>
 
-            <h2 class="mt-6 text-2xl font-bold text-white">
-                Verification Link Expired
-            </h2>
+          <h2 class="mt-6 text-2xl font-bold text-white">
+            Verification Link Expired
+          </h2>
 
-            <p class="mt-3 text-sm text-slate-400 leading-relaxed">
-                This verification link is invalid or has expired.
-                Request a new verification email to verify your account.
-            </p>
+          <p class="mt-3 text-sm text-slate-400 leading-relaxed">
+            This verification link is invalid or has expired.
+            Request a new verification email to verify your account.
+          </p>
 
-            <div class="mt-6">
-                <PrimaryButton
-                    @click="showResendModal = true"
-                    text="Resend Verification Email"
-                    type="button"
-                    icon="fas fa-paper-plane"
-                />
-            </div>
+          <div class="mt-6">
+            <PrimaryButton
+              @click="showResendModal = true"
+              text="Resend Verification Email"
+              type="button"
+              icon="fas fa-paper-plane"
+            />
+          </div>
 
-            <button
-                @click="goToLogin"
-                class="mt-4 text-sm text-blue-400 hover:underline"
-            >
-                Back to Login
-            </button>
+          <button
+            @click="goToLogin"
+            class="mt-4 text-sm text-blue-400 hover:underline"
+          >
+            Back to Login
+          </button>
 
         </template>
 
@@ -99,7 +99,6 @@
     <!-- bottom gradient line -->
     <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600 animate-gradient"></div>
 
-    <!-- CONTINUE HERE -->
     <!-- resend modal -->
     <div
       v-if="showResendModal"
@@ -278,8 +277,8 @@ async function resendVerification() {
   } 
   catch (error) {
     showToast(
-        error.response?.data?.message ?? 'Unable to send verification email',
-        'Error'
+      error.response?.data?.message ?? 'Unable to send verification email',
+      'Error'
     )
   } 
   finally {
