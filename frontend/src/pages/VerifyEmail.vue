@@ -110,58 +110,63 @@
 
         <template v-if="!emailSent">
 
-            <h3 class="text-center text-xl font-bold text-white">
-                📧 Resend Verification Email
-            </h3>
+          <h3 class="text-center text-xl font-bold text-white">
+            📧 Resend Verification Email
+          </h3>
 
-            <p class="mt-2 text-center text-sm text-slate-400">
-                Enter the email address associated with your account.
-            </p>
+          <p class="mt-2 text-center text-sm text-slate-400">
+            Enter the email address associated with your account.
+          </p>
 
-            <input
-                v-model="email"
-                type="email"
-                placeholder="Email address"
-                class="autofill-fix mt-6 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-white outline-none focus:border-blue-500"
-            />
+          <input
+            v-model="email"
+            type="email"
+            placeholder="Email address"
+            class="autofill-fix mt-6 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-white outline-none focus:border-blue-500"
+          />
 
-            <div class="mt-6 flex gap-3">
+          <div class="mt-6 flex gap-3">
 
-                <button
-                    @click="resendVerification"
-                    class="flex-1 rounded-full bg-blue-500 py-3 text-white hover:bg-blue-600"
-                >
-                    Resend
-                </button>
+            <button
+              @click="resendVerification"
+              :disabled="cooldown > 0"
+              class="flex-1 rounded-full bg-blue-500 py-3 text-white hover:bg-blue-600"
+            >
+              {{
+                cooldown > 0 
+                ? `Resend in ${cooldown}s` 
+                : `Resend`
+              }}
+            </button>
 
-                <button
-                    @click="closeResendModal"
-                    class="flex-1 rounded-full bg-slate-700 py-3 text-white hover:bg-slate-600"
-                >
-                    Cancel
-                </button>
+            <button
+              @click="closeResendModal"
+              class="flex-1 rounded-full bg-slate-700 py-3 text-white hover:bg-slate-600"
+            >
+              Cancel
+            </button>
 
-            </div>
+          </div>
 
         </template>
 
         <template v-else>
 
-            <h3 class="text-center text-xl font-bold text-white">
-                ✓ Verification Email Sent
-            </h3>
+          <h3 class="text-center text-xl font-bold text-white">
+            ✓ Verification Email Sent
+          </h3>
 
-            <p class="mt-2 text-center text-sm text-slate-400">
-                A new verification link has been sent to your email address.
-            </p>
+          <p class="mt-2 text-center text-sm text-slate-400">
+            A new verification link has been sent to your email address.
+          </p>
 
-            <div class="mt-6">
-                <PrimaryButton
-                    @click="closeResendModal"
-                    text="Ok"
-                    type="button"
-                />
-            </div>
+          <div class="mt-6">
+            <PrimaryButton
+              @click="closeResendModal"
+              text="Ok"
+              type="button"
+            />
+          </div>
 
         </template>
 
@@ -188,9 +193,25 @@ const loadingDetails = ref({
 
 const status = ref('loading')
 
+const cooldown = ref(0)
+let timer = null
+
 const email = ref('')
 const showResendModal = ref(false)
 const emailSent = ref(false)
+
+function startCooldown() {
+  cooldown.value = 30
+
+  timer = setInterval(() => {
+    cooldown.value--
+
+    if (cooldown.value <= 0) {
+      clearInterval(timer)
+      timer = null
+    }
+  }, 1000)
+}
 
 onMounted(async () => {
   const params = new URLSearchParams(window.location.search)
@@ -224,6 +245,10 @@ onMounted(async () => {
 })
 
 async function resendVerification() {
+  if (cooldown.value > 0) {
+    return
+  }
+
   const userEmail = email.value.trim()
 
   if (!userEmail) {
@@ -248,6 +273,8 @@ async function resendVerification() {
     emailSent.value = true
 
     showToast('Verification email sent', 'Success')
+
+    startCooldown()
   } 
   catch (error) {
     showToast(

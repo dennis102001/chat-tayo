@@ -110,7 +110,7 @@ const loadingDetails = ref({
   subtitle: 'Please wait...'
 })
 
-const cooldown = ref(5)
+const cooldown = ref(30)
 let timer = null
 
 onMounted(() => {
@@ -124,7 +124,7 @@ onUnmounted(() => {
 })
 
 function startCooldown() {
-  cooldown.value = 5
+  cooldown.value = 30
 
   timer = setInterval(() => {
     cooldown.value--

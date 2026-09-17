@@ -119,9 +119,14 @@
 
             <button
               @click="resendVerification"
+              :disabled="cooldown > 0"
               class="flex-1 rounded-full bg-blue-500 py-3 text-white hover:bg-blue-600"
             >
-              Resend
+              {{
+                cooldown > 0 
+                ? `Resend in ${cooldown}s` 
+                : `Resend`
+              }}
             </button>
 
             <button
@@ -183,6 +188,9 @@ const loadingDetails = ref({
   subtitle: 'Please wait...'
 })
 
+const cooldown = ref(0)
+let timer = null
+
 const showResendVerificationModal = ref(false)
 const emailResendVerificationSent = ref(false)
 
@@ -231,6 +239,10 @@ async function register(){
 }
 
 async function resendVerification() {
+  if (cooldown.value > 0) {
+    return
+  }
+
   const userEmail = formData.value.email.trim()
 
   if (!userEmail) {
@@ -253,6 +265,8 @@ async function resendVerification() {
     emailResendVerificationSent.value = true
 
     showToast('Verification email sent', 'Success')
+
+    startCooldown()
   } 
   catch (error) {
     showToast(error.response?.data?.message ?? 'Unable to send verification email', 'Error')
@@ -265,6 +279,19 @@ async function resendVerification() {
 function closeResendModal() {
   showResendVerificationModal.value = false
   emailResendVerificationSent.value = false
+}
+
+function startCooldown() {
+  cooldown.value = 30
+
+  timer = setInterval(() => {
+    cooldown.value--
+
+    if (cooldown.value <= 0) {
+      clearInterval(timer)
+      timer = null
+    }
+  }, 1000)
 }
 
 function showLoading(title, subtitle){
