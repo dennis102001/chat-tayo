@@ -304,7 +304,7 @@ class AuthController extends Controller
         if (!$user || $user->email_verified_at) {
             return response()->json([
                 'success' => true,
-                'message' => 'If an unverified account exists with this email, a verification email has been sent. Decoy'
+                'message' => 'If an unverified account exists with this email, a verification email has been sent.'
             ], 200);
         }
         

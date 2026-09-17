@@ -149,11 +149,14 @@ async function resendVerification() {
   loading.value = true
 
   try {
-    await axiosClient.post('/api/email/resend-verification', {
+    const response = await axiosClient.post('/api/email/resend-verification', {
       email: email.value
     })
 
-    showToast('Verification email sent', 'Success')
+    showToast(
+      response?.data?.message ?? 'Verification email sent', 
+      'Success'
+    )
 
     startCooldown()
   } 
