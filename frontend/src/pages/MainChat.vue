@@ -840,7 +840,6 @@ async function updateUser(data){
 
   const formData = new FormData();
   formData.append('name', data.name)
-  formData.append('email', data.email)
 
   // Only append avatar if it's a File object
   if (data.avatar instanceof File) {
@@ -857,7 +856,6 @@ async function updateUser(data){
 
     showToast('Successfully updated', 'Success')
     authUser.value.name = response.data.name
-    authUser.value.email = response.data.email
     authUser.value.avatar_url = response.data.avatar_url
     
   } 

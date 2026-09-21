@@ -162,13 +162,11 @@ class AuthController extends Controller
         $user = auth()->user();
 
         $data = $request->validate([
-            'name' => ['required', 'string'],
-            'email' => ['required', 'email', 'unique:users,email,'. $user->id ],
+            'name' => ['required', 'string', 'max:255'],
             'avatar' => ['nullable', 'image', 'max:2048']
         ]);
 
         $user->name = $data['name'];
-        $user->email = $data['email'];
 
         if ($request->hasFile('avatar')) {
             if($user->avatar){
@@ -192,7 +190,6 @@ class AuthController extends Controller
         return response()->json([
             'avatar_url' => $user->avatar ? asset('storage/' . $user->avatar) : null,
             'name' => $user->name,
-            'email' => $user->email,
         ]);
     }
 

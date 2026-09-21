@@ -54,18 +54,21 @@
         <div>
           <label class="text-blue-200 text-xs">Display Name</label>
           <input
-              v-model="form.name"
-              class="w-full mt-1 px-4 py-2 rounded-xl bg-white/5 border border-slate-400/30 text-white focus:border-blue-500 focus:bg-blue-500/10 outline-none"
-            />
+            v-model="form.name"
+            class="w-full mt-1 px-4 py-2 rounded-xl bg-white/5 border border-slate-400/30 text-white focus:border-blue-500 focus:bg-blue-500/10 outline-none"
+          />
         </div>
 
         <div>
           <label class="text-blue-200 text-xs">Email</label>
-          <input
-            v-model="form.email"
-            type="email"
-            class="w-full mt-1 px-4 py-2 rounded-xl bg-white/5 border border-slate-400/30 text-white focus:border-blue-500 focus:bg-blue-500/10 outline-none"
-          />
+
+          <div class="w-full mt-1 px-4 py-2 rounded-xl bg-white/5 border border-slate-400/20 text-slate-400">
+            {{ form.email }}
+          </div>
+
+          <p class="mt-1 text-xs text-slate-500">
+            Email address cannot be changed.
+          </p>
         </div>
 
         <button
@@ -101,7 +104,7 @@ const preview = ref(null)
 const fileInput = ref(null)
 
 const initial = computed(() => {
-    return form.value.name ? form.value.name.charAt(0).toUpperCase() : '?'
+  return form.value.name ? form.value.name.charAt(0).toUpperCase() : '?'
 })
 
 watch(
