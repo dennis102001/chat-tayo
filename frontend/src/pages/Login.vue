@@ -274,7 +274,7 @@ async function login() {
 
     showToast('Successful login', 'Success')
 
-    await router.push({ name: 'MainChat' })
+    await router.replace({ name: 'MainChat' })
     
   } 
   catch (error) {

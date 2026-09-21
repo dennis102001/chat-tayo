@@ -822,7 +822,7 @@ async function logout(){
     await axiosClient.post('/api/logout')
     
     userStore.logoutUser()
-    router.push({ name: 'Login' })
+    router.replace({ name: 'Login' })
   } 
   catch (error) {
     showToast('Failed to logout', 'Error')
