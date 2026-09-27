@@ -134,6 +134,7 @@
       <!-- search bar -->
       <div class="p-3 border-b border-white/10 relative">
         <input
+          ref="searchInput"
           v-model="searchBar"
           @focus="handleFocus"
           @blur="handleBlur"
@@ -149,7 +150,8 @@
         ></i>
       </div>
 
-      <div v-if="showSearchResultArea" class="flex-1 flex overflow-y-auto">
+      <!-- show search result area -->
+      <div v-if="isSearchFocused" class="flex-1 flex overflow-y-auto">
         <div v-if="matchedUsers.length !== 0" class="flex-1">
           <div 
             v-for="user in matchedUsers" 
@@ -413,6 +415,7 @@
 <script setup>
 import { onMounted, ref, nextTick, watch, computed } from 'vue'
 import { useToast } from '@/composables/useToast';
+import { onBeforeRouteLeave } from 'vue-router';
 import useUserStore from '@/stores/user';
 import axiosClient from '@/axios';
 import Loading from '@/components/Loading.vue';
@@ -449,7 +452,8 @@ const messageFormData = ref({
   message: null
 })
 
-const showSearchResultArea = ref(false)
+const searchInput = ref(null)
+const isSearchFocused = ref(false)
 const searchBar = ref('')
 let timeout = null
 const matchedUsers = ref([])
@@ -460,6 +464,7 @@ const toggleProfileDropdown = () => isProfileDropdownOpen.value = !isProfileDrop
 const isAccountSettingsOpen = ref(false);
 const showUpdateProfileModal = ref(false)
 const showChangePasswordModal = ref(false)
+const isLoggingOut = ref(false)
 
 const currentConvoDropdown = ref()
 const isCurrentConvoDropdownOpen = ref(false)
@@ -785,19 +790,19 @@ function maintainScrollPosition(oldHeight) {
 }
 
 function handleFocus() {
-  showSearchResultArea.value = true
+  isSearchFocused.value = true
 }
 
 function handleBlur() {
   if (!searchBar.value) {
-    showSearchResultArea.value = false
+    isSearchFocused.value = false
     matchedUsers.value = []
   }
 }
 
 function clearSearchBar(){
   searchBar.value = ''
-  showSearchResultArea.value = false
+  isSearchFocused.value = false
   matchedUsers.value = []
 }
 
@@ -819,10 +824,12 @@ async function logout(){
   showLoading("Logging out", "Please wait while we securely log you out.")
 
   try {
+    isLoggingOut.value = true
+    
     await axiosClient.post('/api/logout')
     
     userStore.logoutUser()
-    router.replace({ name: 'Login' })
+    router.push({ name: 'Login' })
   } 
   catch (error) {
     showToast('Failed to logout', 'Error')
@@ -1081,6 +1088,50 @@ onMounted(() => {
     })  
   
     document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeRouteLeave(() => {
+  if(isLoggingOut.value){
+    return true
+  }
+
+  if (isSearchFocused.value) {
+    searchInput.value?.blur()
+    return false
+  }
+
+  if(isCurrentConvoDropdownOpen.value){
+    isCurrentConvoDropdownOpen.value = false
+    return false
+  }
+
+  if(showUpdateProfileModal.value){
+    showUpdateProfileModal.value = false
+    return false
+  }
+  
+  if(showChangePasswordModal.value){
+    showChangePasswordModal.value = false
+    return false
+  }
+
+  if(showConfirmModal.value){
+    cancelAction()
+    return false
+  }
+
+  if(isProfileDropdownOpen.value){
+    isProfileDropdownOpen.value = false
+    return false
+  }
+  
+  if(currentConversation.value){
+    closeCurrentConversation()
+    return false
+  }
+
+  askLogout()
+  return false
 })
 
 </script>
