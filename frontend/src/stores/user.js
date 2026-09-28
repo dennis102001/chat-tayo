@@ -5,6 +5,7 @@ import router from '@/router';
 const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
+    isAutoLoggingOut: false
   }),
   actions: {
     fetchUser () {
@@ -13,7 +14,9 @@ const useUserStore = defineStore('user', {
           this.user = data.user;
         })
     },
-    logoutUser () {
+    async logoutUser (auto = false) {
+      this.isAutoLoggingOut = auto
+
       localStorage.removeItem('token')
 
       if (window.Echo) {
@@ -22,7 +25,8 @@ const useUserStore = defineStore('user', {
       }
 
       this.user = null
-      router.push({name: 'Login'})
+      await router.replace({name: 'Login'})
+      this.isAutoLoggingOut = false
     }
   }
 })

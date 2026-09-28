@@ -829,7 +829,6 @@ async function logout(){
     await axiosClient.post('/api/logout')
     
     userStore.logoutUser()
-    router.push({ name: 'Login' })
   } 
   catch (error) {
     showToast('Failed to logout', 'Error')
@@ -1091,6 +1090,10 @@ onMounted(() => {
 })
 
 onBeforeRouteLeave(() => {
+  if(userStore.isAutoLoggingOut){
+    return true
+  }
+
   if(isLoggingOut.value){
     return true
   }

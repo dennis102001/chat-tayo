@@ -20,7 +20,7 @@ axiosClient.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       const userStore = useUserStore()
-      userStore.logoutUser()
+      userStore.logoutUser(true)
     }
 
     throw error
