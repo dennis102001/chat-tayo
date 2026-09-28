@@ -68,7 +68,7 @@
           <!-- Profile Dropdown -->
           <div
             v-if="isProfileDropdownOpen"
-            class="absolute z-40 right-0 mt-2 w-48 rounded-xl border border-blue-500/30 bg-slate-900/30 backdrop-blur-lg shadow-xl overflow-hidden"
+            class="absolute z-40 right-0 mt-2 w-56 rounded-xl border border-blue-500/30 bg-slate-900/30 backdrop-blur-lg shadow-xl overflow-hidden"
           >
             <!-- Account Settings -->
             <button 
@@ -102,7 +102,9 @@
                   class="w-full flex items-center gap-3 px-4 py-3 pl-10 text-sm text-slate-200 hover:bg-blue-500/20 transition"
                 >
                   <i class="fas fa-lock text-slate-400"></i>
-                  Change Password
+                  <span class="ml-1">
+                    Change Password
+                  </span>
                 </button>
 
                 <div class="h-px bg-slate-600/30"></div> 
@@ -112,7 +114,9 @@
                   class="w-full flex items-center gap-3 px-4 py-3 pl-10 text-sm text-red-400 hover:bg-red-500/20 transition" 
                 > 
                   <i class="fas fa-trash-alt"></i> 
-                  Delete Account 
+                  <span class="ml-1">
+                    Delete Account
+                  </span> 
                 </button>
 
               </div>
